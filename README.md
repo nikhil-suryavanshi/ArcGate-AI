@@ -19,19 +19,24 @@ The product helps teams:
 
 ```mermaid
 flowchart TB
-  U[Business brief] --> O[Workflow orchestrator]
-  O --> I[Intent Analyst]
-  I --> R[Requirements Engineer]
-  R --> A[Application Architect]
-  A --> G[Governance Reviewer]
-  G --> H[Human architecture review]
-  H -- Approve --> P[Artefact Agent]
-  P --> E[Markdown package export]
-  O -. Run trace and handoffs .-> UI[ArcGate AI studio]
-  H -- Return for revision --> U
+  UI[ArcGate AI Studio] --> O[Run Workflow API]
+  O --> I
+
+  subgraph AGENTS[OpenAI specialist agents]
+    I[Intent Analyst] --> R[Requirements Engineer]
+    R --> A[Application Architect]
+    A --> G[Governance Reviewer]
+  end
+
+  G --> H{Human architecture review}
+  H -- Approved --> C[Create Artefacts API]
+  C --> P[Artefact Agent]
+  P --> E[Approval-marked Markdown package]
+  H -- Needs revision --> UI
+  AGENTS -. Structured handoffs and findings .-> UI
 ```
 
-Each specialist is an independent OpenAI Responses API call with a role-specific prompt and strict JSON Schema response. The orchestrator passes the structured output from one specialist to the next and returns the handoff trace to the studio. No artefact-generation call is made until a human has approved the governed proposal.
+The Run Workflow API makes one independent OpenAI Responses API call for each specialist, with role-specific prompts and strict JSON Schema responses. It passes structured output forward through the workflow and returns the handoff trace to the studio. The Create Artefacts API is unreachable from the workflow until a human has approved the governed proposal.
 
 ## Workflow
 
