@@ -79,8 +79,12 @@ export type AnalyzeResponse = {
   result: ArchitectureResult;
 };
 
-export type AgentId = "intent" | "requirements" | "architecture" | "governance" | "package";
+export type AgentId = "intent" | "requirements" | "architecture" | "governance" | "artifact";
 export type AgentStatus = "waiting" | "working" | "complete" | "review";
-export type AgentHandoff = { agent: AgentId; label: string; status: AgentStatus; received: string; created: string; passedTo?: string };
+export type AgentHandoff = { agent: AgentId; label: string; status: AgentStatus; received: string; created: string; model: string; passedTo?: string };
 export type GovernanceFinding = { severity: "high" | "medium" | "low"; title: string; evidence: string; recommendation: string };
-export type ArchitectureRun = { source: "openai"; model: string; result: ArchitectureResult; handoffs: AgentHandoff[]; governance: { score: number; summary: string; findings: GovernanceFinding[]; status: "awaiting_review" | "approved" }; };
+export type IntentAnalysis = { summary: string; outcomes: string[]; scope: string; openQuestions: string[] };
+export type RequirementsAnalysis = { functionalRequirements: FunctionalRequirement[]; nonFunctionalRequirements: NonFunctionalRequirement[] };
+export type GovernanceReview = { score: number; summary: string; findings: GovernanceFinding[] };
+export type AgentArtifact = { fileName: string; markdown: string; summary: string; model?: string; createdAt?: string };
+export type ArchitectureRun = { runId: string; source: "openai"; model: string; result: ArchitectureResult; handoffs: AgentHandoff[]; governance: GovernanceReview & { status: "awaiting_review" | "approved" }; artifact?: AgentArtifact };

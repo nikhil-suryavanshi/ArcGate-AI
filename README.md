@@ -15,23 +15,31 @@ The product helps teams:
 - surface governance findings before approval; and
 - keep a human architect accountable for approving the final package.
 
-## Workflow
+## True multi-agent architecture
 
 ```mermaid
-flowchart LR
-  A[Business brief] --> B[Intent Analyst]
-  B --> C[Requirements Engineer]
-  C --> D[Application Architect]
-  D --> E[Governance Reviewer]
-  E --> F[Human architecture review]
-  F --> G[Approved package export]
+flowchart TB
+  U[Business brief] --> O[Workflow orchestrator]
+  O --> I[Intent Analyst]
+  I --> R[Requirements Engineer]
+  R --> A[Application Architect]
+  A --> G[Governance Reviewer]
+  G --> H[Human architecture review]
+  H -- Approve --> P[Artefact Agent]
+  P --> E[Markdown package export]
+  O -. Run trace and handoffs .-> UI[ArcGate AI studio]
+  H -- Return for revision --> U
 ```
 
+Each specialist is an independent OpenAI Responses API call with a role-specific prompt and strict JSON Schema response. The orchestrator passes the structured output from one specialist to the next and returns the handoff trace to the studio. No artefact-generation call is made until a human has approved the governed proposal.
+
+## Workflow
+
 1. Define the business outcome, scale, constraints, existing systems, and preferred architecture style.
-2. Generate a structured proposal with OpenAI.
-3. Review the visible agent handoffs and governance findings.
+2. The Intent Analyst, Requirements Engineer, Application Architect, and Governance Reviewer run sequentially.
+3. Review each visible handoff, model used, governance score, and findings.
 4. Approve the proposal through the human review gate.
-5. Export the approved architecture package as Markdown.
+5. The Artefact Agent creates the approval-marked Markdown package, ready for copy or export.
 
 ## Included architecture package
 
@@ -44,7 +52,7 @@ flowchart LR
 
 - Next.js App Router and TypeScript
 - Tailwind CSS and shadcn/ui
-- OpenAI Responses API with strict JSON Schema output
+- OpenAI Responses API with role-specific, strict JSON Schema outputs
 - Mermaid for architecture diagrams
 
 ## Run locally
@@ -72,7 +80,7 @@ Never commit `.env.local` or an API key.
 
 ## Current scope
 
-The current release focuses on creating and reviewing architecture packages. The human approval gate updates the active session and enables export; persistence, organisation-level access controls, and long-term artefact storage are intentionally future enhancements.
+The current release keeps its run trace and generated artefact in the active browser session. The human approval action triggers a separate artefact-generation call; persistence, organisation-level access controls, approval audit records, and long-term artefact storage are intentional future enhancements.
 
 ## Roadmap
 
