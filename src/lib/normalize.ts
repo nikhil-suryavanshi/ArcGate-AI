@@ -42,10 +42,17 @@ export function extractJson(text: string): unknown {
   const candidate = fenced ? fenced[1].trim() : trimmed;
   const start = candidate.indexOf("{");
   const end = candidate.lastIndexOf("}");
-  if (start === -1 || end === -1) {
+  if (start === -1) {
     throw new Error("The model did not return JSON.");
   }
-  return JSON.parse(candidate.slice(start, end + 1));
+  if (end === -1 || end < start) {
+    throw new Error("The model returned an incomplete JSON response.");
+  }
+  try {
+    return JSON.parse(candidate.slice(start, end + 1));
+  } catch {
+    throw new Error("The model returned invalid JSON.");
+  }
 }
 
 function mapRequirements(raw: unknown, prefix: "FR" | "NFR") {

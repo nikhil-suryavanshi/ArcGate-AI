@@ -1,6 +1,6 @@
 import type { ArchitectureResult } from "./types";
 
-export function toMarkdown(result: ArchitectureResult, source: string): string {
+export function toMarkdown(result: ArchitectureResult, source: string, approvalNote?: string): string {
   const arch = result.applicationArchitecture;
   const lines: string[] = [
     `# ${result.title}`,
@@ -69,6 +69,14 @@ export function toMarkdown(result: ArchitectureResult, source: string): string {
     "",
     ...result.assumptions.map((item) => `- ${item}`),
     "",
+    ...(approvalNote
+      ? [
+          "## Approval",
+          "",
+          approvalNote,
+          "",
+        ]
+      : []),
   ];
 
   return lines.join("\n");

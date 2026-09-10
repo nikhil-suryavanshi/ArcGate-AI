@@ -1,6 +1,7 @@
 import "server-only";
 
 import OpenAI from "openai";
+import { toMarkdown } from "./export-markdown";
 import { extractJson, normalizeResult } from "./normalize";
 import type {
   AgentArtifact,
@@ -64,9 +65,12 @@ const governanceSchema: JsonSchema = {
   properties: { score: { type: "number" }, summary: { type: "string" }, findings: { type: "array", items: { type: "object", additionalProperties: false, required: ["severity", "title", "evidence", "recommendation"], properties: { severity: { type: "string", enum: ["high", "medium", "low"] }, title: { type: "string" }, evidence: { type: "string" }, recommendation: { type: "string" } } } } },
 };
 
-const artifactSchema: JsonSchema = {
-  type: "object", additionalProperties: false, required: ["fileName", "markdown", "summary"],
-  properties: { fileName: { type: "string" }, markdown: { type: "string" }, summary: { type: "string" } },
+const artifactMetadataSchema: JsonSchema = {
+  type: "object", additionalProperties: false, required: ["summary", "approvalNote"],
+  properties: {
+    summary: { type: "string" },
+    approvalNote: { type: "string" },
+  },
 };
 
 export function serverOpenAIKey(): string {
@@ -81,16 +85,29 @@ export function openAIModel(): string {
   return process.env.OPENAI_MODEL?.trim() || DEFAULT_OPENAI_MODEL;
 }
 
-async function callAgent<T>(client: OpenAI, name: string, instructions: string, input: unknown, schema: JsonSchema): Promise<AgentCall<T>> {
+type AgentCallOptions = {
+  maxOutputTokens?: number;
+  reasoningEffort?: "none" | "minimal" | "low" | "medium" | "high" | "xhigh";
+};
+
+async function callAgent<T>(client: OpenAI, name: string, instructions: string, input: unknown, schema: JsonSchema, options: AgentCallOptions = {}): Promise<AgentCall<T>> {
   const model = openAIModel();
   const response = await client.responses.create({
     model,
     instructions,
     input: JSON.stringify(input),
-    reasoning: { effort: "medium" },
+    reasoning: { effort: options.reasoningEffort ?? "medium" },
+    max_output_tokens: options.maxOutputTokens,
     store: false,
     text: { format: { type: "json_schema", name, strict: true, schema } },
   });
+  if (response.error) {
+    throw new Error(`${name} failed: ${response.error.message}`);
+  }
+  if (response.incomplete_details) {
+    const reason = response.incomplete_details.reason ?? "unknown reason";
+    throw new Error(`${name} returned an incomplete response (${reason}).`);
+  }
   if (!response.output_text.trim()) throw new Error(`${name} returned an empty response.`);
   return { value: extractJson(response.output_text) as T, model: response.model || model };
 }
@@ -135,12 +152,26 @@ export async function runArchitectureWorkflow(brief: ArchitectureBrief, apiKey: 
 
 export async function createApprovedArtifacts(result: ArchitectureResult, apiKey: string): Promise<AgentArtifact> {
   const client = new OpenAI({ apiKey, maxRetries: 1, timeout: 80_000 });
-  const artifact = await callAgent<AgentArtifact>(
-    client, "approved_architecture_artifact",
-    "You are the Artefact Agent in a governed architecture workflow. The supplied architecture has already passed human approval. Produce one complete Markdown architecture package with the proposed solution, functional requirements, non-functional requirements, application architecture, Mermaid diagram, assumptions, and a concise approval note. Return only JSON.",
-    { result }, artifactSchema
+  const artifact = await callAgent<{ summary: string; approvalNote: string }>(
+    client, "approved_architecture_artifact_metadata",
+    "You are the Artefact Agent in a governed architecture workflow. The supplied architecture has already passed human approval. Confirm that the approved package is ready for release. Return a concise release summary and approval note only. Do not reproduce, alter, or add to the architecture content. Return only JSON.",
+    { title: result.title, result }, artifactMetadataSchema,
+    { maxOutputTokens: 1_200, reasoningEffort: "low" },
   );
-  return { ...artifact.value, model: artifact.model, createdAt: new Date().toISOString() };
+  const fileName = `${result.title
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "") || "architecture-package"}.md`;
+
+  return {
+    fileName,
+    markdown: toMarkdown(result, artifact.model, artifact.value.approvalNote),
+    summary: artifact.value.summary,
+    model: artifact.model,
+    createdAt: new Date().toISOString(),
+  };
 }
 
 function normalizeGovernance(review: GovernanceReview): GovernanceReview {
