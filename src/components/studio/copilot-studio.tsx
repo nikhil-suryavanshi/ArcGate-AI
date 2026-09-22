@@ -140,7 +140,7 @@ export function CopilotStudio() {
           governance: { ...current.governance, status: "approved" },
           handoffs: current.handoffs.map((handoff) => {
             if (handoff.agent === "governance") {
-              return { ...handoff, status: "complete", passedTo: "Artefact Agent" };
+              return { ...handoff, status: "complete", passedTo: "Artifact Agent" };
             }
             if (handoff.agent === "artifact") {
               return {
