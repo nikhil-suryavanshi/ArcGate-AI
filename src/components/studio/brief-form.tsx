@@ -137,7 +137,7 @@ export function BriefForm({
         </div>
       </section>
 
-      <Section title="Industry & Scale">
+      <Section title="Industry and scale">
         <div className="grid gap-2">
           <FieldLabel>Industry</FieldLabel>
           <div className="flex flex-wrap gap-1.5">
@@ -164,7 +164,7 @@ export function BriefForm({
         </div>
       </Section>
 
-      <Section title="Architecture Approach">
+      <Section title="Architecture approach">
         <p className="text-[12px] leading-5 text-muted-foreground">Choose how the proposed application should be structured.</p>
         <div className="flex flex-wrap gap-1.5">
           {ARCHITECTURE_STYLES.map((style) => (
@@ -196,7 +196,7 @@ export function BriefForm({
         </div>
       </Section>
 
-      <Section title="Existing Systems">
+      <Section title="Existing systems">
         <Input
           value={brief.existingSystems}
           onChange={(event) => patch({ existingSystems: event.target.value })}
@@ -217,7 +217,7 @@ export function BriefForm({
             className="h-9 rounded-xl border-hairline bg-background/55 text-[13px]"
           />
           <span className="text-[11px] leading-4 text-muted-foreground/80">
-            Needed for live generation. Stored only in this browser. Get a key from{" "}
+            Required for live generation. Your key is stored only in this browser. Get one from{" "}
             <a
               className="text-foreground/70 underline-offset-2 hover:text-foreground hover:underline"
               href="https://platform.openai.com/api-keys"
@@ -242,7 +242,7 @@ export function BriefForm({
         ) : (
           <CompassIcon data-icon="inline-start" />
         )}
-        {loading ? "Creating proposal" : "Create proposal"}
+        {loading ? "Creating your proposal" : "Create proposal"}
         {!loading ? <ArrowRightIcon data-icon="inline-end" /> : null}
       </Button>
     </form>

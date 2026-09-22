@@ -7,7 +7,7 @@ const STEPS = [
   "Reading business intent",
   "Deriving functional requirements",
   "Deriving non-functional requirements",
-  "Drafting application architecture (app layers)",
+  "Drafting the application architecture",
   "Capturing assumptions",
 ];
 

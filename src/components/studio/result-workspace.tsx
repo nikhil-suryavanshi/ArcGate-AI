@@ -36,7 +36,7 @@ export function ResultWorkspace({ result }: { result: ArchitectureResult }) {
       <Tabs defaultValue="architecture" className="gap-5">
         <TabsList className="h-auto w-full flex-wrap justify-start gap-1 rounded-2xl border border-hairline bg-card/70 p-1.5 shadow-[0_6px_20px_oklch(0.25_0.02_258_/_0.035)]">
           <TabsTrigger value="architecture" className="min-h-9 rounded-xl px-3 py-2 text-[13px]">
-            App architecture
+            Application architecture
           </TabsTrigger>
           <TabsTrigger value="functional" className="min-h-9 rounded-xl px-3 py-2 text-[13px]">
             Functional requirements
@@ -71,7 +71,7 @@ export function ResultWorkspace({ result }: { result: ArchitectureResult }) {
           <div className="grid gap-4 md:grid-cols-2">
             <Card className="rounded-[1.35rem] border-hairline bg-card/75 py-6 ring-0">
               <CardHeader>
-                <CardTitle className="font-sans text-base font-medium tracking-tight">Technology in this application</CardTitle>
+                <CardTitle className="font-sans text-base font-medium tracking-tight">Technology choices</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {architecture.techStack.map((stack) => (
@@ -83,7 +83,7 @@ export function ResultWorkspace({ result }: { result: ArchitectureResult }) {
                 ))}
               </CardContent>
             </Card>
-            <ListCard title="Application integration adapters" items={architecture.integrationPoints} />
+            <ListCard title="Integration adapters" items={architecture.integrationPoints} />
           </div>
         </TabsContent>
 
@@ -126,7 +126,7 @@ export function ResultWorkspace({ result }: { result: ArchitectureResult }) {
         </TabsContent>
 
         <TabsContent value="assumptions">
-          <ListCard title="Assumptions for this application" items={result.assumptions} />
+          <ListCard title="Application assumptions" items={result.assumptions} />
         </TabsContent>
       </Tabs>
     </div>
@@ -149,7 +149,7 @@ function ListCard({ title, items }: { title: string; items: string[] }) {
             ))}
           </ul>
         ) : (
-          <p className="text-muted-foreground">None captured.</p>
+          <p className="text-muted-foreground">No assumptions captured.</p>
         )}
       </CardContent>
     </Card>

@@ -12,7 +12,7 @@ export async function POST(request: Request) {
       (typeof body.openaiApiKey === "string" ? body.openaiApiKey.trim() : "") || serverOpenAIKey();
 
     if (!apiKey) {
-      return NextResponse.json({ error: "Add an OpenAI API key to create artefacts." }, { status: 400 });
+      return NextResponse.json({ error: "Add an OpenAI API key to create artifacts." }, { status: 400 });
     }
     if (!body.result || typeof body.result !== "object") {
       return NextResponse.json({ error: "An approved architecture result is required." }, { status: 400 });
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ artifact });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Unable to create approved artefacts" },
+      { error: error instanceof Error ? error.message : "Unable to create approved artifacts" },
       { status: 400 },
     );
   }

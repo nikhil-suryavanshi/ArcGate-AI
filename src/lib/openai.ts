@@ -145,7 +145,7 @@ export async function runArchitectureWorkflow(brief: ArchitectureBrief, apiKey: 
     completed("requirements", "Requirements Engineer", intent.value.summary, `${requirements.value.functionalRequirements.length} functional and ${requirements.value.nonFunctionalRequirements.length} quality requirements`, requirements.model, "Application Architect"),
     completed("architecture", "Application Architect", "Intent analysis and requirements", `${result.applicationArchitecture.style} application blueprint`, architecture.model, "Governance Reviewer"),
     { agent: "governance", label: "Governance Reviewer", status: "review", received: "Architecture package", created: `${review.score}/100 governance score with ${review.findings.length} finding(s)`, model: governance.model, passedTo: "Human Architecture Review" },
-    { agent: "artifact", label: "Artefact Agent", status: "waiting", received: "Human-approved proposal", created: "Waiting for an approval decision", model: openAIModel() },
+    { agent: "artifact", label: "Artifact Agent", status: "waiting", received: "Human-approved proposal", created: "Waiting for an approval decision", model: openAIModel() },
   ];
   return { runId: crypto.randomUUID(), source: "openai", model: architecture.model, result, handoffs, governance: { ...review, status: "awaiting_review" } };
 }
@@ -154,7 +154,7 @@ export async function createApprovedArtifacts(result: ArchitectureResult, apiKey
   const client = new OpenAI({ apiKey, maxRetries: 1, timeout: 80_000 });
   const artifact = await callAgent<{ summary: string; approvalNote: string }>(
     client, "approved_architecture_artifact_metadata",
-    "You are the Artefact Agent in a governed architecture workflow. The supplied architecture has already passed human approval. Confirm that the approved package is ready for release. Return a concise release summary and approval note only. Do not reproduce, alter, or add to the architecture content. Return only JSON.",
+    "You are the Artifact Agent in a governed architecture workflow. The supplied architecture has already passed human approval. Confirm that the approved package is ready for release. Return a concise release summary and approval note only. Do not reproduce, alter, or add to the architecture content. Return only JSON.",
     { title: result.title, result }, artifactMetadataSchema,
     { maxOutputTokens: 1_200, reasoningEffort: "low" },
   );

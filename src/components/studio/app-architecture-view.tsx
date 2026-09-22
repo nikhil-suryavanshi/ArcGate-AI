@@ -60,9 +60,9 @@ export function AppArchitectureView({ layers, modules }: AppArchitectureViewProp
 
   return (
     <div className="rounded-xl border border-hairline bg-card/60 p-5 sm:p-6">
-      <p className="text-[13px] font-medium">App architecture</p>
+      <p className="text-[13px] font-medium">Application architecture</p>
       <p className="mt-1 text-[13px] leading-6 text-muted-foreground">
-        Internal structure of the application — presentation through integrations.
+        Internal application structure—from presentation through integrations.
       </p>
       <div className="mt-5 space-y-2">
         {grouped.map((row, index) => (

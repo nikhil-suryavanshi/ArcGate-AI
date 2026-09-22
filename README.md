@@ -11,7 +11,7 @@ Architecture teams often begin with incomplete briefs, inconsistent documentatio
 The product helps teams:
 
 - turn business intent into functional requirements, measurable quality attributes, architecture, and assumptions;
-- make the work passed between AI specialists visible and reviewable;
+- make handoffs between AI specialists visible and reviewable;
 - surface governance findings before approval; and
 - keep a human architect accountable for approving the final package.
 
@@ -29,14 +29,14 @@ flowchart TB
   end
 
   G --> H{Human architecture review}
-  H -- Approved --> C[Create Artefacts API]
-  C --> P[Artefact Agent]
+  H -- Approved --> C[Create Artifacts API]
+  C --> P[Artifact Agent]
   P --> E[Approval-marked Markdown package]
   H -- Needs revision --> UI
   AGENTS -. Structured handoffs and findings .-> UI
 ```
 
-The Run Workflow API makes one independent OpenAI Responses API call for each specialist, with role-specific prompts and strict JSON Schema responses. It passes structured output forward through the workflow and returns the handoff trace to the studio. The Create Artefacts API is unreachable from the workflow until a human has approved the governed proposal.
+The Run Workflow API makes one independent OpenAI Responses API call for each specialist, with role-specific prompts and strict JSON Schema responses. It passes structured output forward through the workflow and returns the handoff trace to the studio. The Create Artifacts API is unreachable from the workflow until a human has approved the governed proposal.
 
 ## Workflow
 
@@ -44,7 +44,7 @@ The Run Workflow API makes one independent OpenAI Responses API call for each sp
 2. The Intent Analyst, Requirements Engineer, Application Architect, and Governance Reviewer run sequentially.
 3. Review each visible handoff, model used, governance score, and findings.
 4. Approve the proposal through the human review gate.
-5. The Artefact Agent creates the approval-marked Markdown package, ready for copy or export.
+5. The Artifact Agent creates the approval-marked Markdown package, ready to copy or export.
 
 ## Included architecture package
 
@@ -85,11 +85,11 @@ Never commit `.env.local` or an API key.
 
 ## Current scope
 
-The current release keeps its run trace and generated artefact in the active browser session. The human approval action triggers a separate artefact-generation call; persistence, organisation-level access controls, approval audit records, and long-term artefact storage are intentional future enhancements.
+The current release keeps its run trace and generated artifact in the active browser session. The human approval action triggers a separate artifact-generation call; persistence, organization-level access controls, approval audit records, and long-term artifact storage are intentional future enhancements.
 
 ## Roadmap
 
-- Persist approval records and versioned artefacts
+- Persist approval records and versioned artifacts
 - Add reviewer comments and approval exceptions
 - Connect enterprise standards and architecture patterns as grounded sources
 - Add role-based access and audit history

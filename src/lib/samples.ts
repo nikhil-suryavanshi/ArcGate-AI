@@ -21,23 +21,23 @@ export const SCALES = [
 export const ARCHITECTURE_STYLES = [
   {
     id: "recommend",
-    label: "Recommend for this intent",
-    hint: "The AI model picks the best application architecture style",
+    label: "Recommend the best style for this intent",
+    hint: "The AI model selects the best application architecture style.",
   },
   {
     id: "layered",
     label: "Layered / N-tier",
-    hint: "Presentation, API, domain, and data stacked",
+    hint: "Presentation, API, domain, and data layers are stacked.",
   },
   {
     id: "modular-monolith",
     label: "Modular monolith",
-    hint: "One deployable app with hard module boundaries",
+    hint: "A single deployable application with clear module boundaries.",
   },
   {
     id: "hexagonal",
     label: "Hexagonal (ports & adapters)",
-    hint: "Domain core with UI and integration adapters",
+    hint: "A domain core with UI and integration adapters.",
   },
   {
     id: "microservices",
@@ -47,7 +47,7 @@ export const ARCHITECTURE_STYLES = [
   {
     id: "event-driven",
     label: "Event-driven",
-    hint: "Commands, events, and async application flow",
+    hint: "Commands, events, and asynchronous application flow.",
   },
   {
     id: "cqrs",
@@ -57,12 +57,12 @@ export const ARCHITECTURE_STYLES = [
   {
     id: "serverless",
     label: "Serverless",
-    hint: "Functions, managed data, and event triggers",
+    hint: "Functions, managed data, and event-driven triggers.",
   },
   {
     id: "lcnc-runtime",
     label: "Low-code application runtime",
-    hint: "Studio, catalog, and governed app host",
+    hint: "A studio, catalog, and governed application host.",
   },
 ] as const;
 

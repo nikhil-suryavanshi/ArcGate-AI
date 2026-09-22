@@ -88,12 +88,12 @@ export function CopilotStudio() {
         body: JSON.stringify({ ...brief, openaiApiKey: keyValue.trim() || undefined }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Architecture composition failed");
+      if (!res.ok) throw new Error(data.error || "Could not create the architecture proposal");
       const workflow = data as ArchitectureRun;
       setRun(workflow);
       setResponse({ source: workflow.source, model: workflow.model, result: workflow.result });
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Architecture composition failed");
+      setError(cause instanceof Error ? cause.message : "Could not create the architecture proposal");
     } finally {
       setLoading(false);
     }
@@ -130,7 +130,7 @@ export function CopilotStudio() {
         body: JSON.stringify({ result: response.result, openaiApiKey: keyValue.trim() || undefined }),
       });
       const data = (await res.json()) as { artifact?: ArchitectureRun["artifact"]; error?: string };
-      if (!res.ok || !data.artifact) throw new Error(data.error || "Artefact creation failed");
+      if (!res.ok || !data.artifact) throw new Error(data.error || "Could not create the approved artifacts");
 
       setRun((current) => {
         if (!current) return current;
@@ -155,7 +155,7 @@ export function CopilotStudio() {
         };
       });
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Artefact creation failed");
+      setError(cause instanceof Error ? cause.message : "Could not create the approved artifacts");
     } finally {
       setApproving(false);
     }
@@ -183,7 +183,7 @@ export function CopilotStudio() {
               }`}
             >
               <span className={`size-1.5 rounded-full ${openAIReady ? "bg-primary" : "bg-muted-foreground/50"}`} />
-              {openAIReady ? "OpenAI ready" : "OpenAI key needed"}
+              {openAIReady ? "OpenAI ready" : "OpenAI key required"}
             </span>
             <ThemeToggle />
             {response ? (
@@ -219,7 +219,7 @@ export function CopilotStudio() {
           <div className="grid grid-cols-2 gap-2 rounded-2xl border border-hairline bg-card/70 p-1.5 text-[12px] shadow-[0_8px_30px_oklch(0.25_0.02_258_/_0.05)]">
             <div className="rounded-xl bg-raised px-4 py-3">
               <p className="font-semibold text-foreground">01 · Define</p>
-              <p className="mt-1 text-muted-foreground">Intent & context</p>
+              <p className="mt-1 text-muted-foreground">Intent and context</p>
             </div>
             <div className="rounded-xl px-4 py-3">
               <p className="font-semibold text-foreground">02 · Review</p>
@@ -296,7 +296,7 @@ function AgentReview({ run, approving, onApprove }: { run: ArchitectureRun; appr
     <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-[12px] font-semibold tracking-[0.08em] text-primary uppercase">Agent handoffs</p><p className="mt-1 text-[15px] font-semibold">Architecture Review Gate</p></div><span className="rounded-full bg-primary/10 px-3 py-1 text-[12px] font-semibold text-primary">{run.governance.score}/100</span></div>
     <div className="mt-4 grid gap-2 sm:grid-cols-2">{run.handoffs.map((handoff) => <div key={handoff.agent} className="rounded-xl border border-hairline bg-raised/60 p-3"><p className="text-[13px] font-semibold">{handoff.label}</p><p className="mt-1 text-[11px] font-medium text-primary uppercase">{handoff.status === "review" ? "Human review needed" : handoff.status}</p><p className="mt-2 text-[12px] leading-5 text-muted-foreground">{handoff.created}</p><p className="mt-2 text-[11px] text-muted-foreground">Model · {handoff.model}</p></div>)}</div>
     <div className="mt-4 rounded-xl border border-hairline bg-background/50 p-3"><p className="text-[13px] font-semibold">Governance summary</p><p className="mt-1 text-[12px] leading-5 text-muted-foreground">{run.governance.summary}</p>{run.governance.findings.map((finding) => <p key={finding.title} className="mt-2 text-[12px] text-muted-foreground"><span className="font-semibold text-foreground">{finding.title}:</span> {finding.recommendation}</p>)}</div>
-    {run.governance.status === "awaiting_review" ? <Button className="mt-4 w-full rounded-xl" onClick={onApprove} disabled={approving}>{approving ? "Artefact Agent is creating your package…" : "Approve & create artefacts"}</Button> : <p className="mt-4 rounded-xl bg-primary/10 px-3 py-2 text-[12px] font-semibold text-primary">{run.artifact?.summary ?? "Approved architecture package is ready to export."}</p>}
+    {run.governance.status === "awaiting_review" ? <Button className="mt-4 w-full rounded-xl" onClick={onApprove} disabled={approving}>{approving ? "The artifact agent is creating your package…" : "Approve and create artifacts"}</Button> : <p className="mt-4 rounded-xl bg-primary/10 px-3 py-2 text-[12px] font-semibold text-primary">{run.artifact?.summary ?? "The approved architecture package is ready to export."}</p>}
   </div>;
 }
 

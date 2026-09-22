@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title>ArcGate AI</title>
+  <rect width="64" height="64" rx="16" fill="#1769e0"/>
+  <path d="M16 48 27.5 16h9L48 48h-8.3l-2.5-7.2H26.8L24.3 48H16Zm13.1-14.1h5.8L32 25.5l-2.9 8.4Z" fill="#fff"/>
+  <path d="M21 48V31.5h6.5V48H21Zm15.5 0V31.5H43V48h-6.5Z" fill="#cfe0ff"/>
+</svg>

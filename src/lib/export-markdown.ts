@@ -33,7 +33,7 @@ export function toMarkdown(result: ArchitectureResult, source: string, approvalN
     "",
     `Style: ${arch.style}${arch.styleId ? ` (${arch.styleId})` : ""}`,
     "",
-    arch.styleRationale ? `Why this style: ${arch.styleRationale}` : "",
+    arch.styleRationale ? `Why this architecture style: ${arch.styleRationale}` : "",
     "",
     arch.overview,
     "",

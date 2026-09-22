@@ -70,7 +70,7 @@ const LANE_ORDER: AppLayerId[] = [
 ];
 
 const LANE_META: Record<AppLayerId, { label: string; caption: string }> = {
-  presentation: { label: "Experience", caption: "Channels and UX of this application" },
+  presentation: { label: "Presentation", caption: "Application channels and user experience" },
   api: { label: "Application / API", caption: "Application APIs and BFFs" },
   domain: { label: "Domain", caption: "Business capabilities" },
   data: { label: "Data", caption: "Persistence owned by this application" },
@@ -332,7 +332,7 @@ function categoryLabel(kind: ArchNodeKind): string {
     case "external":
       return "External system";
     case "event":
-      return "Event / async";
+      return "Event / asynchronous";
     case "infrastructure":
       return "Infrastructure";
   }
