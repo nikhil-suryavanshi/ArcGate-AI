@@ -98,6 +98,7 @@ export function CopilotStudio() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Could not create the architecture proposal");
       const workflow = data as ArchitectureRun;
+      setPdfDiagramReady(false);
       setRun(workflow);
       setResponse({ source: workflow.source, model: workflow.model, result: workflow.result });
     } catch (cause) {
