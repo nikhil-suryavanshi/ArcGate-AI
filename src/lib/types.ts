@@ -86,5 +86,5 @@ export type GovernanceFinding = { severity: "high" | "medium" | "low"; title: st
 export type IntentAnalysis = { summary: string; outcomes: string[]; scope: string; openQuestions: string[] };
 export type RequirementsAnalysis = { functionalRequirements: FunctionalRequirement[]; nonFunctionalRequirements: NonFunctionalRequirement[] };
 export type GovernanceReview = { score: number; summary: string; findings: GovernanceFinding[] };
-export type AgentArtifact = { fileName: string; markdown: string; summary: string; model?: string; createdAt?: string };
+export type AgentArtifact = { fileName: string; markdown: string; summary: string; approvalNote?: string; model?: string; createdAt?: string };
 export type ArchitectureRun = { runId: string; source: "openai"; model: string; result: ArchitectureResult; handoffs: AgentHandoff[]; governance: GovernanceReview & { status: "awaiting_review" | "approved" }; artifact?: AgentArtifact };
