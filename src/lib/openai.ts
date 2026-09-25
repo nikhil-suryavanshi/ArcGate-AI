@@ -169,6 +169,7 @@ export async function createApprovedArtifacts(result: ArchitectureResult, apiKey
     fileName,
     markdown: toMarkdown(result, artifact.model, artifact.value.approvalNote),
     summary: artifact.value.summary,
+    approvalNote: artifact.value.approvalNote,
     model: artifact.model,
     createdAt: new Date().toISOString(),
   };
