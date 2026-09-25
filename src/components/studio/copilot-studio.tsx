@@ -320,6 +320,7 @@ export function CopilotStudio() {
     </div>
     {response ? (
       <PrintableArchitectureReport
+        key={run?.runId ?? "draft"}
         result={response.result}
         source={response.model}
         artifact={run?.artifact}
