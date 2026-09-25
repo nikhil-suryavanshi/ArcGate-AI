@@ -59,7 +59,11 @@ export function CopilotStudio() {
   const [serverHasKey, setServerHasKey] = useState(false);
   const [copied, setCopied] = useState(false);
   const [approving, setApproving] = useState(false);
-  const [pdfReady, setPdfReady] = useState(false);
+  const [pdfDiagramReady, setPdfDiagramReady] = useState(false);
+  const pdfReady = Boolean(
+    response &&
+      (!response.result.applicationArchitecture.mermaid.trim() || pdfDiagramReady),
+  );
 
   useEffect(() => {
     void fetch("/api/status")
@@ -84,7 +88,7 @@ export function CopilotStudio() {
     setLoading(true);
     setError(null);
     setRun(null);
-    setPdfReady(false);
+    setPdfDiagramReady(false);
     try {
       const res = await fetch("/api/architecture/run", {
         method: "POST",
@@ -324,7 +328,7 @@ export function CopilotStudio() {
         result={response.result}
         source={response.model}
         artifact={run?.artifact}
-        onDiagramReady={() => setPdfReady(true)}
+        onDiagramReady={() => setPdfDiagramReady(true)}
       />
     ) : null}
     </>
