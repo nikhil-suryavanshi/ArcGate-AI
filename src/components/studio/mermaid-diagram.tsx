@@ -6,6 +6,8 @@ import { useEffect, useId, useRef, useState } from "react";
 type MermaidDiagramProps = {
   chart: string;
   onError?: () => void;
+  onReady?: () => void;
+  forceLight?: boolean;
 };
 
 const THEME_VARIABLES = {
@@ -27,16 +29,22 @@ const THEME_VARIABLES = {
   },
 } as const;
 
-export function MermaidDiagram({ chart, onError }: MermaidDiagramProps) {
+export function MermaidDiagram({ chart, onError, onReady, forceLight = false }: MermaidDiagramProps) {
   const ref = useRef<HTMLDivElement>(null);
   const reactId = useId().replace(/:/g, "");
   const [error, setError] = useState<string | null>(null);
   const onErrorRef = useRef(onError);
+  const onReadyRef = useRef(onReady);
   const theme = useTheme();
+  const activeTheme = forceLight ? "light" : theme;
 
   useEffect(() => {
     onErrorRef.current = onError;
   }, [onError]);
+
+  useEffect(() => {
+    onReadyRef.current = onReady;
+  }, [onReady]);
 
   useEffect(() => {
     let cancelled = false;
@@ -48,10 +56,10 @@ export function MermaidDiagram({ chart, onError }: MermaidDiagramProps) {
         mermaid.initialize({
           startOnLoad: false,
           securityLevel: "loose",
-          theme: theme === "dark" ? "dark" : "neutral",
+          theme: activeTheme === "dark" ? "dark" : "neutral",
           themeVariables: {
             background: "transparent",
-            ...THEME_VARIABLES[theme],
+            ...THEME_VARIABLES[activeTheme],
             fontFamily: "var(--font-sans), ui-sans-serif, system-ui",
           },
         });
@@ -61,11 +69,13 @@ export function MermaidDiagram({ chart, onError }: MermaidDiagramProps) {
           ref.current.innerHTML = svg;
           const svgEl = ref.current.querySelector("svg");
           svgEl?.setAttribute("class", "mx-auto h-auto max-w-full");
+          onReadyRef.current?.();
         }
       } catch (cause) {
         if (!cancelled) {
           setError(cause instanceof Error ? cause.message : "Could not render diagram");
           onErrorRef.current?.();
+          onReadyRef.current?.();
         }
       }
     }
@@ -74,7 +84,7 @@ export function MermaidDiagram({ chart, onError }: MermaidDiagramProps) {
     return () => {
       cancelled = true;
     };
-  }, [chart, reactId, theme]);
+  }, [chart, reactId, theme, forceLight]);
 
   if (error) {
     if (onError) return null;
