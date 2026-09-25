@@ -44,7 +44,9 @@ The Run Workflow API makes one independent OpenAI Responses API call for each sp
 2. The Intent Analyst, Requirements Engineer, Application Architect, and Governance Reviewer run sequentially.
 3. Review each visible handoff, model used, governance score, and findings.
 4. Approve the proposal through the human review gate.
-5. The Artifact Agent creates the approval-marked Markdown package, ready to copy or export.
+5. The Artifact Agent creates the approval-marked Markdown package. From the studio, copy it, download the Markdown file, or export a print-ready PDF.
+
+From the review workspace, **Export PDF** opens the browser print dialog; choose **Save as PDF** to create the PDF file. The PDF report includes the architecture diagram, requirements, technology choices, integrations, assumptions, and approval note when available.
 
 ## Included architecture package
 
