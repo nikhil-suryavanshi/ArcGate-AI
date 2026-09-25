@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import type { AgentArtifact, ArchitectureResult } from "@/lib/types";
 import { MermaidDiagram } from "./mermaid-diagram";
 
@@ -18,9 +17,6 @@ export function PrintableArchitectureReport({
   const architecture = result.applicationArchitecture;
   const hasDiagram = Boolean(architecture.mermaid.trim());
 
-  useEffect(() => {
-    if (!hasDiagram) onDiagramReady();
-  }, [hasDiagram, onDiagramReady]);
 
   return (
     <article className="print-report">
