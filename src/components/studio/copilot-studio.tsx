@@ -13,12 +13,14 @@ import {
   CompassIcon,
   CopyIcon,
   DownloadIcon,
+  PrinterIcon,
   SparklesIcon,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { BriefForm } from "./brief-form";
 import { LoadingAnalysis } from "./loading-analysis";
 import { ResultWorkspace } from "./result-workspace";
+import { PrintableArchitectureReport } from "./printable-architecture-report";
 
 const KEY_STORAGE = "arcgate-ai.openaiApiKey";
 
@@ -57,6 +59,7 @@ export function CopilotStudio() {
   const [serverHasKey, setServerHasKey] = useState(false);
   const [copied, setCopied] = useState(false);
   const [approving, setApproving] = useState(false);
+  const [pdfReady, setPdfReady] = useState(false);
 
   useEffect(() => {
     void fetch("/api/status")
@@ -81,6 +84,7 @@ export function CopilotStudio() {
     setLoading(true);
     setError(null);
     setRun(null);
+    setPdfReady(false);
     try {
       const res = await fetch("/api/architecture/run", {
         method: "POST",
@@ -109,6 +113,21 @@ export function CopilotStudio() {
     anchor.download = `${slug(response.result.title)}.md`;
     anchor.click();
     URL.revokeObjectURL(url);
+  }
+
+  function exportPdf() {
+    if (!response || !pdfReady) return;
+
+    const previousTitle = document.title;
+    document.title = `${slug(response.result.title)}-architecture-package`;
+    window.addEventListener(
+      "afterprint",
+      () => {
+        document.title = previousTitle;
+      },
+      { once: true },
+    );
+    window.print();
   }
 
   async function copyMarkdown() {
@@ -162,7 +181,8 @@ export function CopilotStudio() {
   }
 
   return (
-    <div className="flex min-h-full flex-1 flex-col">
+    <>
+    <div className="arcgate-screen flex min-h-full flex-1 flex-col">
       <header className="sticky top-0 z-20 border-b border-hairline bg-header/95 backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-[1320px] flex-wrap items-center justify-between gap-x-6 gap-y-3 px-5 py-3 sm:px-7 lg:px-8">
           <div className="flex min-w-0 items-center gap-3">
@@ -194,7 +214,17 @@ export function CopilotStudio() {
                 </Button>
                 <Button variant="outline" size="sm" onClick={downloadMarkdown}>
                   <DownloadIcon data-icon="inline-start" />
-                  Export
+                  Download Markdown
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={exportPdf}
+                  disabled={!pdfReady}
+                  title="Choose Save as PDF in the print dialog"
+                >
+                  <PrinterIcon data-icon="inline-start" />
+                  {pdfReady ? "Export PDF" : "Preparing PDF…"}
                 </Button>
               </>
             ) : null}
@@ -288,6 +318,15 @@ export function CopilotStudio() {
         </div>
       </main>
     </div>
+    {response ? (
+      <PrintableArchitectureReport
+        result={response.result}
+        source={response.model}
+        artifact={run?.artifact}
+        onDiagramReady={() => setPdfReady(true)}
+      />
+    ) : null}
+    </>
   );
 }
 
