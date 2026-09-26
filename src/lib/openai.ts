@@ -17,6 +17,14 @@ import type {
 
 export const DEFAULT_OPENAI_MODEL = "gpt-5.6-sol";
 
+const OUTPUT_QUALITY_GUIDANCE = [
+  "Write all user-facing text in concise, polished, grammatically correct professional English.",
+  "Use complete sentences, clear punctuation, consistent terminology, and sentence case; proofread every field.",
+  "Avoid fragments, awkward phrasing, malformed words, and duplicated ideas.",
+  "For legacy replacement, say phased modernization or the strangler pattern; never say strangulation.",
+  "Do not include model names, model IDs, provider IDs, or generation internals in the architecture package.",
+].join(" ");
+
 type JsonSchema = Record<string, unknown>;
 type AgentCall<T> = { value: T; model: string };
 
@@ -94,7 +102,7 @@ async function callAgent<T>(client: OpenAI, name: string, instructions: string, 
   const model = openAIModel();
   const response = await client.responses.create({
     model,
-    instructions,
+    instructions: `${instructions}\n\n${OUTPUT_QUALITY_GUIDANCE}`,
     input: JSON.stringify(input),
     reasoning: { effort: options.reasoningEffort ?? "medium" },
     max_output_tokens: options.maxOutputTokens,
@@ -167,7 +175,7 @@ export async function createApprovedArtifacts(result: ArchitectureResult, apiKey
 
   return {
     fileName,
-    markdown: toMarkdown(result, artifact.model, artifact.value.approvalNote),
+    markdown: toMarkdown(result, artifact.value.approvalNote),
     summary: artifact.value.summary,
     approvalNote: artifact.value.approvalNote,
     model: artifact.model,

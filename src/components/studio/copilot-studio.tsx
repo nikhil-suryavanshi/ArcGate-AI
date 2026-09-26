@@ -110,7 +110,7 @@ export function CopilotStudio() {
 
   function downloadMarkdown() {
     if (!response) return;
-    const markdown = run?.artifact?.markdown ?? toMarkdown(response.result, response.model);
+    const markdown = run?.artifact?.markdown ?? toMarkdown(response.result);
     const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
@@ -137,7 +137,7 @@ export function CopilotStudio() {
 
   async function copyMarkdown() {
     if (!response) return;
-    await navigator.clipboard.writeText(run?.artifact?.markdown ?? toMarkdown(response.result, response.model));
+    await navigator.clipboard.writeText(run?.artifact?.markdown ?? toMarkdown(response.result));
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1600);
   }
@@ -327,7 +327,6 @@ export function CopilotStudio() {
       <PrintableArchitectureReport
         key={run?.runId ?? "draft"}
         result={response.result}
-        source={response.model}
         artifact={run?.artifact}
         onDiagramReady={() => setPdfDiagramReady(true)}
       />
